@@ -13,6 +13,6 @@ namespace PetHospital.Business.Models.Response
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
-        public List<ContactsResponse>? Contacts { get; set; }
+        public bool IsBanned { get; set; } = false;
     }
 }

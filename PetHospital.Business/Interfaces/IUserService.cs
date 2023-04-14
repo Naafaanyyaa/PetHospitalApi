@@ -11,8 +11,9 @@ namespace PetHospital.Business.Interfaces
     public interface IUserService
     {
         Task<UserResponse> GetUserInfoAsync(string userId);
-        Task<UserResponse> UpdateAsync(UserRequest request);
-        Task<UserResponse> DeleteAsync(string userId);
-        Task<UserResponse> ChangePasswordAsync(ChangePasswordRequest passwordRequest);
+        Task<UserResponse> UpdateAsync(string userId, UserRequest userRequest);
+        Task DeleteAsync(string userId);
+        Task<UserResponse> ChangePasswordAsync(string userId, ChangePasswordRequest passwordRequest);
+  
     }
 }

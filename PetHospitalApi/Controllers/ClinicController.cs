@@ -7,6 +7,7 @@ using PetHospital.Business.Models.Request;
 using PetHospital.Business.Models.Response;
 using System.Security.Claims;
 using PetHospital.Data.Entities;
+using PetHospital.Business.Services;
 
 namespace PetHospital.Api.Controllers
 {
@@ -34,7 +35,7 @@ namespace PetHospital.Api.Controllers
 
 
         [HttpPost("[action]")]
-        [Authorize(Roles = "HospitalHost")]
+        [Authorize(Roles = "HospitalHost")] 
         [ProducesResponseType(typeof(IEnumerable<ClinicResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add([FromQuery] ClinicRequest request)
         {

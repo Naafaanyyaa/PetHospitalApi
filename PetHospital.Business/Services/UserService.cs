@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetHospital.Business.Exceptions;
 using PetHospital.Business.Interfaces;
@@ -46,19 +47,63 @@ namespace PetHospital.Business.Services
             return result;
         }
 
-        public Task<UserResponse> UpdateAsync(UserRequest request)
+        public async Task<UserResponse> UpdateAsync(string userId, UserRequest userRequest)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(user), userId);
+            }
+
+            user.FirstName = userRequest.FirstName;
+            user.LastName = userRequest.LastName;
+            user.Email = userRequest.Email;
+            user.UserName = userRequest.UserName;
+
+            await _userManager.UpdateAsync(user);
+
+            var result = _mapper.Map<User, UserResponse>(user);
+
+            return result;
         }
 
-        public Task<UserResponse> DeleteAsync(string userId)
+        public async Task DeleteAsync(string userId)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(user), userId);
+            }
+
+            var identityResult = await _userManager.DeleteAsync(user);
+
+            if (identityResult.Errors.Any())
+            {
+                throw new Exception(identityResult.Errors.ToArray().ToString());
+            }
         }
 
-        public Task<UserResponse> ChangePasswordAsync(ChangePasswordRequest passwordRequest)
+        public async Task<UserResponse> ChangePasswordAsync(string userId, ChangePasswordRequest passwordRequest)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(user), userId);
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, passwordRequest.OldPassword))
+            {
+                throw new ValidationException("Password doesn't match");
+            }
+
+            await _userManager.ChangePasswordAsync(user, passwordRequest.OldPassword, passwordRequest.NewPassword);
+
+            var result = _mapper.Map<User, UserResponse>(user);
+
+            return result;
         }
     }
 }

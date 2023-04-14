@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using PetHospital.Data.Entities.Identity;
 using System.Security.Claims;
 using PetHospital.Business.Interfaces;
+using PetHospital.Business.Models.Request;
 using PetHospital.Business.Models.Response;
+using PetHospital.Business.Services;
 
 namespace PetHospital.Api.Controllers
 {
@@ -28,6 +30,36 @@ namespace PetHospital.Api.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var result = await _userService.GetUserInfoAsync(userId);
             return Ok(result);
+        }
+
+        [HttpPatch("ChangePassword")]
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePassword([FromBody]ChangePasswordRequest newPassword)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await _userService.ChangePasswordAsync(userId, newPassword);
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await _userService.DeleteAsync(userId);
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateUserInfo(UserRequest userRequest)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await _userService.UpdateAsync(userId, userRequest);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
     }
 }

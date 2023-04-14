@@ -102,6 +102,11 @@ namespace PetHospital.Business.Services
                 throw new ValidationException("Hospital not found.");
             }
 
+            if (hospital.IsBanned == true)
+            {
+                throw new ValidationException("Hospital was banned.");
+            }
+
             if (!userId.Equals(hospital.User[0].Id))
             {
                 throw new ValidationException("Hospital was not created by this user.");
