@@ -46,7 +46,18 @@ namespace PetHospital.Data.Repositories
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-                entity.User = new List<User>{ user } ;
+                //entity.User = new List<User>{ user } ;
+                //await _db.AddAsync(entity);
+
+                var userClinic = new UserClinic();
+                //userClinic.Id = new Guid().ToString();
+                userClinic.ClinicId = entity.Id;
+                userClinic.UserId = user.Id;
+                userClinic.CreatedDate = DateTime.Now;
+                userClinic.User = user;
+
+                entity.UserClinic = new List<UserClinic> { userClinic };
+           
                 await _db.AddAsync(entity);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -65,7 +76,8 @@ namespace PetHospital.Data.Repositories
         public override Task<Clinic?> GetByIdAsync(string id)
         {
             return _db.Clinic.AsNoTracking()
-                .Include(x => x.User)
+                .Include(x => x.UserClinic)
+                .ThenInclude(x => x.User)
                 .ThenInclude(x => x.UserRoles.Where(o => o.Role.Name.Equals("Doctor")))
                 .FirstOrDefaultAsync(x => x.Id == id);
         }

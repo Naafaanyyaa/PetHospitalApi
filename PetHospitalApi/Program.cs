@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PetHospital.Api.Extensions;
+using PetHospital.Api.Middleware;
 using PetHospital.Business;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var Configuration = builder.Configuration;
+
+builder.Host.UseSerilog((context, config) => config
+    .WriteTo.Console()
+    .ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
@@ -73,7 +79,8 @@ builder.Services.AddSwaggerGen(c =>
 
 
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -37,7 +37,7 @@ namespace PetHospital.Business.Services
             var predicate = CreateFilterPredicate(request);
             var source = await _clinicRepository.GetAsync(predicate, includes: new List<Expression<Func<Clinic, object>>>()
             {
-                x => x.User
+                x => x.UserClinic
             });
 
             var result = _mapper.Map<List<Clinic>, List<ClinicResponse>>(source);
@@ -84,7 +84,7 @@ namespace PetHospital.Business.Services
         {
             var hospital = await _clinicRepository.GetByIdAsync(hospitalId);
 
-            if (!userId.Equals(hospital.User[0].Id))
+            if (!userId.Equals(hospital.UserClinic[0].UserId))
             {
                 throw new ValidationException("Hospital was not created by this user.");
             }
@@ -107,7 +107,7 @@ namespace PetHospital.Business.Services
                 throw new ValidationException("Hospital was banned.");
             }
 
-            if (!userId.Equals(hospital.User[0].Id))
+            if (!userId.Equals(hospital.UserClinic[0].UserId))
             {
                 throw new ValidationException("Hospital was not created by this user.");
             }

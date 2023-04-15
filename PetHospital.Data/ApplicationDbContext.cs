@@ -73,23 +73,23 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
             .WithMany(t => t.Diseases)
             .HasForeignKey(t => t.AnimalId)
             .OnDelete(DeleteBehavior.Cascade);
+        //modelBuilder
+        //    .Entity<User>()
+        //    .HasMany(x => x.Clinic)
+        //    .WithMany(x => x.User);
         modelBuilder
-            .Entity<User>()
-            .HasMany(x => x.Clinic)
-            .WithMany(x => x.User);
-        //modelBuilder
-        //    .Entity<UserClinic>()
-        //    .HasOne(x => x.User)
-        //    .WithMany(x => x.UserClinic)
-        //    .HasForeignKey(x => x.UserId)
-        //    .HasPrincipalKey(x => x.Id)
-        //    .OnDelete(DeleteBehavior.Cascade);
-        //modelBuilder
-        //    .Entity<UserClinic>()
-        //    .HasOne(x => x.Clinic)
-        //    .WithMany(x => x.UserClinic)
-        //    .HasForeignKey(x => x.ClinicId)
-        //    .HasPrincipalKey(x => x.Id)
-        //    .OnDelete(DeleteBehavior.Cascade);
+            .Entity<UserClinic>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.UserClinic)
+            .HasForeignKey(x => x.UserId)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<UserClinic>()
+            .HasOne(x => x.Clinic)
+            .WithMany(x => x.UserClinic)
+            .HasForeignKey(x => x.ClinicId)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -11,5 +11,5 @@ public class Clinic : BaseEntity
     public string Address { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public bool IsBanned { get; set; } = false;
-    public virtual List<User> User { get; set; } = new List<User>();
+    public virtual List<UserClinic> UserClinic { get; set; } = new List<UserClinic>();
 }

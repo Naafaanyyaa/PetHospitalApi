@@ -13,5 +13,5 @@ public class User : IdentityUser
     public virtual Subscription? Subscription { get; set; }
     public virtual List<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public virtual List<Animal>? Animals { get; set; } = new List<Animal>();
-    public virtual List<Clinic>? Clinic { get; set; } = new List<Clinic>();
+    public virtual List<UserClinic>? UserClinic { get; set; } = new List<UserClinic>();
 }
