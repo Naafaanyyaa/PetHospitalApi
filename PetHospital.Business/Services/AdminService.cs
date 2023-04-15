@@ -40,7 +40,7 @@ namespace PetHospital.Business.Services
                 throw new NotFoundException(nameof(user), userId);
             }
 
-            user.IsBanned = true;
+            user.IsBanned = !user.IsBanned;
 
             await _userManager.UpdateAsync(user);
 
@@ -58,7 +58,7 @@ namespace PetHospital.Business.Services
                 throw new NotFoundException(nameof(clinic), clinicId);
             }
 
-            clinic.IsBanned = true;
+            clinic.IsBanned = !clinic.IsBanned;
 
             await _clinicRepository.UpdateAsync(clinic);
 
@@ -75,7 +75,9 @@ namespace PetHospital.Business.Services
             {
                 RoleEnum.Admin => CustomRoles.AdminRole,
                 RoleEnum.Doctor => CustomRoles.DoctorRole,
-                RoleEnum.HospitalHost => CustomRoles.HospitalHost
+                RoleEnum.HospitalHost => CustomRoles.HospitalHost,
+                RoleEnum.User => CustomRoles.UserRole,
+                _ => CustomRoles.UserRole
             });
 
             if (user == null)
@@ -85,7 +87,7 @@ namespace PetHospital.Business.Services
 
             if (usersWithRole.Contains(user))
             {
-                throw new ValidationException("User with such id has already been admin");
+                throw new ValidationException($"User with such id has already been {role}");
             }
 
             await _userManager.AddToRolesAsync(user, new List<string>
