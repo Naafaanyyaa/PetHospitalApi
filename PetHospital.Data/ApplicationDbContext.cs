@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PetHospital.Data.Entities;
 using PetHospital.Data.Entities.Identity;
-using SavePets.Data.Entities;
 
 namespace PetHospital.Data;
 
@@ -73,10 +72,6 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
             .WithMany(t => t.Diseases)
             .HasForeignKey(t => t.AnimalId)
             .OnDelete(DeleteBehavior.Cascade);
-        //modelBuilder
-        //    .Entity<User>()
-        //    .HasMany(x => x.Clinic)
-        //    .WithMany(x => x.User);
         modelBuilder
             .Entity<UserClinic>()
             .HasOne(x => x.User)
@@ -91,5 +86,23 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
             .HasForeignKey(x => x.ClinicId)
             .HasPrincipalKey(x => x.Id)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<AnimalClinic>()
+            .HasOne(x => x.Clinic)
+            .WithMany(x => x.AnimalClinic)
+            .HasForeignKey(x => x.ClinicId)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<AnimalClinic>()
+            .HasOne(x => x.Animal)
+            .WithMany(x => x.AnimalClinic)
+            .HasForeignKey(x => x.AnimalId)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        //modelBuilder
+        //    .Entity<User>()
+        //    .HasMany(x => x.Clinic)
+        //    .WithMany(x => x.User);
     }
 }

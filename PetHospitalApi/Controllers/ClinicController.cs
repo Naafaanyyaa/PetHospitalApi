@@ -8,6 +8,7 @@ using PetHospital.Business.Models.Response;
 using System.Security.Claims;
 using PetHospital.Data.Entities;
 using PetHospital.Business.Services;
+using PetHospital.Data.Entities.Identity;
 
 namespace PetHospital.Api.Controllers
 {
@@ -28,7 +29,6 @@ namespace PetHospital.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ClinicResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetClinicById(string clinicId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var result = await _clinicService.GetClinicById(clinicId);
             return Ok(result);
         }
@@ -69,9 +69,22 @@ namespace PetHospital.Api.Controllers
         [ProducesResponseType(typeof(List<ClinicResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetClinicByRequest([FromQuery] ClinicAllRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var result = await _clinicService.GetAllClinicsByRequest(request);
             return StatusCode(StatusCodes.Status200OK, result);
         }
+
+        [HttpPost("[action]")]
+        [Authorize(Roles = "HospitalHost")]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreateDoctor([FromBody] DoctorRegistrationRequest request, string clinicId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await _clinicService.RegisterDoctor(userId, clinicId, request);
+            return StatusCode(StatusCodes.Status201Created, result);
+        }
+        //TODO: 1) Add ability to add doctor to clinic
+        //2) statistics with animal and users
+        //3) register user in this clinic
+
     }
 }

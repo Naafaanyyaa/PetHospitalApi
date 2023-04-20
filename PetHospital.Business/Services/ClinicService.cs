@@ -8,10 +8,12 @@ using PetHospital.Business.Models.Response;
 using PetHospital.Data.Entities;
 using PetHospital.Data.Entities.Identity;
 using PetHospital.Data.Interfaces;
-using SavePets.Data.Entities;
 using System.Linq.Expressions;
 using PetHospital.Business.Infrastructure.Expressions;
 using System.Net;
+using Azure.Core;
+using Microsoft.EntityFrameworkCore;
+using PetHospital.Data.Enums;
 
 namespace PetHospital.Business.Services
 {
@@ -121,6 +123,51 @@ namespace PetHospital.Business.Services
             await _clinicRepository.UpdateAsync(updatedHospitalInfo);
 
             var result = _mapper.Map<Clinic, ClinicResponse>(updatedHospitalInfo);
+
+            return result;
+        }
+
+        public async Task<UserResponse> RegisterDoctor(string userId, string clinicId, DoctorRegistrationRequest userRequest)
+        {
+            var clinic = await _clinicRepository.GetByIdAsync(clinicId);
+
+            if (clinic == null)
+            {
+                throw new NotFoundException(nameof(clinic), clinicId);
+            }
+
+            if (!clinic.UserClinic.Exists(x => x.UserId == userId && x.ClinicId == clinicId))
+            {
+                throw new NotFoundException("User is not host of this user");
+            }
+
+            var isUserExists = await _userManager.Users.AnyAsync(x => x.Email == userRequest.Email || x.UserName == userRequest.UserName);
+
+            if (isUserExists)
+            {
+                throw new ValidationException("User with such username or email already exists");
+            }
+
+            User user = new User();
+            _mapper.Map(userRequest, user);
+
+            var identityResult = await _userManager.CreateAsync(user, userRequest.Password);
+
+            if (identityResult.Errors.Any())
+                throw new Exception(identityResult.Errors.ToArray().ToString());
+
+            identityResult = await _userManager.AddToRolesAsync(user, new List<string>
+            {
+                CustomRoles.UserRole,
+                CustomRoles.DoctorRole
+            });
+
+            if (identityResult.Errors.Any())
+                throw new Exception(identityResult.Errors.ToArray().ToString());
+
+            _logger.LogInformation("User {UserId} has been successfully registered", user.Id);
+
+            var result = _mapper.Map<User, UserResponse>(user);
 
             return result;
         }

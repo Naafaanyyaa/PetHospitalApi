@@ -2,7 +2,7 @@
 
 namespace PetHospital.Data.Interfaces
 {
-    public interface IContactsRepository : IRepository<Contacts>
+    public interface IAnimalRepository : IRepository<Animal>
     {
     }
 }

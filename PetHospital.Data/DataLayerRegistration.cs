@@ -27,6 +27,7 @@ namespace PetHospital.Data
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IClinicRepository, ClinicRepository>();
             services.AddScoped<IContactsRepository, ContactsRepository>();
+            services.AddScoped<IAnimalRepository, AnimalRepository>();
 
             return services;
         }

@@ -8,8 +8,9 @@ namespace PetHospital.Business.Interfaces
     {
         Task<List<ClinicResponse>> GetAllClinicsByRequest(ClinicAllRequest request);
         Task<ClinicResponse> GetClinicById(string requestId);
-        Task<ClinicResponse> CreateAsync(ClinicRequest request, string UserId);
+        Task<ClinicResponse> CreateAsync(ClinicRequest request, string userId);
         Task DeleteByIdAsync(string userId, string requestId);
         Task<ClinicResponse> UpdateByIdAsync(string userId, string requestId, ClinicRequest request);
+        Task<UserResponse> RegisterDoctor(string userId, string clinicId, DoctorRegistrationRequest userRequest);
     }
 }

@@ -1,5 +1,4 @@
 using PetHospital.Data.Entities.Abstract;
-using SavePets.Data.Entities;
 
 
 namespace PetHospital.Data.Entities;

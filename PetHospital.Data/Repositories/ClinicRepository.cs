@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using PetHospital.Data.Entities;
 using PetHospital.Data.Entities.Identity;
 using PetHospital.Data.Interfaces;
-using SavePets.Data.Entities;
 
 namespace PetHospital.Data.Repositories
 {
@@ -40,17 +39,12 @@ namespace PetHospital.Data.Repositories
             }
         }
 
-        //TODO: Maybe change this method to the right way
         public async Task<Clinic> AddAsync(Clinic entity, User user)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-                //entity.User = new List<User>{ user } ;
-                //await _db.AddAsync(entity);
-
                 var userClinic = new UserClinic();
-                //userClinic.Id = new Guid().ToString();
                 userClinic.ClinicId = entity.Id;
                 userClinic.UserId = user.Id;
                 userClinic.CreatedDate = DateTime.Now;

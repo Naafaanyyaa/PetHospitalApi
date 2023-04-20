@@ -4,7 +4,7 @@ namespace PetHospital.Data.Entities.Identity;
 
 public class Role : IdentityRole
 {
-    public Role() : base() { }
+    public Role() : base() { } 
 
     public Role(string roleName) : base(roleName) { }
 
