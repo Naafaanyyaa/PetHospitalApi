@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PetHospital.Data.Entities.Identity;
 using System.Security.Claims;
 using PetHospital.Business.Interfaces;
 using PetHospital.Business.Models.Request;
 using PetHospital.Business.Models.Response;
-using PetHospital.Business.Services;
 
 namespace PetHospital.Api.Controllers
 {

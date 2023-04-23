@@ -16,8 +16,4 @@
     <ProjectReference Include="..\PetHospital.Data\PetHospital.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Enums\" />
-  </ItemGroup>
-
 </Project>

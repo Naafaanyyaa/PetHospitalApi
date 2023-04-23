@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
+﻿using System.Linq.Expressions;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +12,7 @@ using PetHospital.Business.Models.Response;
 using PetHospital.Data.Entities;
 using PetHospital.Data.Entities.Identity;
 using PetHospital.Data.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace PetHospital.Business.Services
 {

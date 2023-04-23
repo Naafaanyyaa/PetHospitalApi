@@ -1,11 +1,4 @@
-﻿using PetHospital.Data.Entities.Identity;
-using PetHospital.Data.Entities;
-using PetHospital.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PetHospital.Data.Enums;
 
 namespace PetHospital.Business.Models.Response
 {

@@ -1,6 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using PayPal.Api;
 using PetHospital.Business.Exceptions;

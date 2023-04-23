@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using PetHospital.Business.Interfaces;
 using PetHospital.Business.Models.Request;
 using PetHospital.Business.Models.Response;
-using PetHospital.Business.Services;
-using PetHospital.Data.Entities;
 using PetHospital.Data.Enums;
 
 namespace PetHospital.Api.Controllers

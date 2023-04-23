@@ -1,12 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
 
 namespace PetHospital.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +32,7 @@ namespace PetHospital.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsBanned = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -118,7 +117,7 @@ namespace PetHospital.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AnimalName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AnimalDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AnimalDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnimalType = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -221,30 +220,6 @@ namespace PetHospital.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClinicUser",
-                columns: table => new
-                {
-                    ClinicId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClinicUser", x => new { x.ClinicId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_ClinicUser_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClinicUser_Clinic_ClinicId",
-                        column: x => x.ClinicId,
-                        principalTable: "Clinic",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -267,6 +242,60 @@ namespace PetHospital.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserClinic",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClinicId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserClinic", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserClinic_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserClinic_Clinic_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnimalClinic",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AnimalId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClinicId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimalClinic", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnimalClinic_Animal_AnimalId",
+                        column: x => x.AnimalId,
+                        principalTable: "Animal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimalClinic_Clinic_ClinicId",
+                        column: x => x.ClinicId,
+                        principalTable: "Clinic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -318,6 +347,16 @@ namespace PetHospital.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AnimalClinic_AnimalId",
+                table: "AnimalClinic",
+                column: "AnimalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnimalClinic_ClinicId",
+                table: "AnimalClinic",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -364,11 +403,6 @@ namespace PetHospital.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClinicUser_UserId",
-                table: "ClinicUser",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Contacts_UserId",
                 table: "Contacts",
                 column: "UserId");
@@ -382,11 +416,24 @@ namespace PetHospital.Data.Migrations
                 name: "IX_Photo_AnimalId",
                 table: "Photo",
                 column: "AnimalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserClinic_ClinicId",
+                table: "UserClinic",
+                column: "ClinicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserClinic_UserId",
+                table: "UserClinic",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AnimalClinic");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -403,9 +450,6 @@ namespace PetHospital.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ClinicUser");
-
-            migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
@@ -415,13 +459,16 @@ namespace PetHospital.Data.Migrations
                 name: "Photo");
 
             migrationBuilder.DropTable(
+                name: "UserClinic");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Clinic");
+                name: "Animal");
 
             migrationBuilder.DropTable(
-                name: "Animal");
+                name: "Clinic");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -57,7 +57,6 @@ namespace PetHospital.Business.Services
 
             disease.AnimalId = animalId;
             disease.CreatedDate = DateTime.Now;
-            disease.Animal = animal;
 
             await _diseasesRepository.AddAsync(disease);
 
@@ -76,6 +75,7 @@ namespace PetHospital.Business.Services
             }
 
             var disease = _mapper.Map<DiseaseRequest, Diseases>(request, previousDisease);
+            disease.LastModifiedDate = DateTime.Now;
 
             await _diseasesRepository.UpdateAsync(disease);
 

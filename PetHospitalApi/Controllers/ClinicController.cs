@@ -21,7 +21,7 @@ namespace PetHospital.Api.Controllers
         }
 
         [HttpGet("[action]/{clinicId}")]
-        [Authorize(Roles = "HospitalHost")]
+        [Authorize]
         [ProducesResponseType(typeof(IEnumerable<ClinicResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetClinicById(string clinicId)
         {

@@ -10,10 +10,7 @@ using PetHospital.Data.Entities.Identity;
 using PetHospital.Data.Interfaces;
 using System.Linq.Expressions;
 using PetHospital.Business.Infrastructure.Expressions;
-using System.Net;
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
-using PetHospital.Data.Enums;
 
 namespace PetHospital.Business.Services
 {
@@ -109,7 +106,7 @@ namespace PetHospital.Business.Services
                 throw new ValidationException("Hospital was banned.");
             }
 
-            if (!userId.Equals(hospital.UserClinic[0].UserId))
+            if (!hospital.UserClinic.Exists(x => x.UserId.Equals(userId)))
             {
                 throw new ValidationException("Hospital was not created by this user.");
             }
@@ -151,6 +148,18 @@ namespace PetHospital.Business.Services
             User user = new User();
             _mapper.Map(userRequest, user);
 
+            UserClinic userClinic = new UserClinic()
+            {
+                ClinicId = clinicId,
+                UserId = user.Id,
+                CreatedDate = DateTime.Now
+            };
+
+            user.UserClinic = new List<UserClinic>()
+            {
+                userClinic
+            };
+
             var identityResult = await _userManager.CreateAsync(user, userRequest.Password);
 
             if (identityResult.Errors.Any())
@@ -164,6 +173,8 @@ namespace PetHospital.Business.Services
 
             if (identityResult.Errors.Any())
                 throw new Exception(identityResult.Errors.ToArray().ToString());
+
+
 
             _logger.LogInformation("User {UserId} has been successfully registered", user.Id);
 

@@ -113,6 +113,38 @@ namespace PetHospital.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PetHospital.Data.Entities.Animal", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AnimalDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnimalName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AnimalType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Animal");
+                });
+
             modelBuilder.Entity("PetHospital.Data.Entities.AnimalClinic", b =>
                 {
                     b.Property<string>("Id")
@@ -441,38 +473,6 @@ namespace PetHospital.Data.Migrations
                     b.ToTable("UserClinic");
                 });
 
-            modelBuilder.Entity("SavePets.Data.Entities.Animal", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AnimalDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AnimalName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AnimalType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Animal");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("PetHospital.Data.Entities.Identity.Role", null)
@@ -509,9 +509,20 @@ namespace PetHospital.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PetHospital.Data.Entities.Animal", b =>
+                {
+                    b.HasOne("PetHospital.Data.Entities.Identity.User", "User")
+                        .WithMany("Animals")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PetHospital.Data.Entities.AnimalClinic", b =>
                 {
-                    b.HasOne("SavePets.Data.Entities.Animal", "Animal")
+                    b.HasOne("PetHospital.Data.Entities.Animal", "Animal")
                         .WithMany("AnimalClinic")
                         .HasForeignKey("AnimalId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -541,7 +552,7 @@ namespace PetHospital.Data.Migrations
 
             modelBuilder.Entity("PetHospital.Data.Entities.Diseases", b =>
                 {
-                    b.HasOne("SavePets.Data.Entities.Animal", "Animal")
+                    b.HasOne("PetHospital.Data.Entities.Animal", "Animal")
                         .WithMany("Diseases")
                         .HasForeignKey("AnimalId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -581,7 +592,7 @@ namespace PetHospital.Data.Migrations
 
             modelBuilder.Entity("PetHospital.Data.Entities.Photo", b =>
                 {
-                    b.HasOne("SavePets.Data.Entities.Animal", "Animal")
+                    b.HasOne("PetHospital.Data.Entities.Animal", "Animal")
                         .WithMany("Photos")
                         .HasForeignKey("AnimalId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -609,15 +620,13 @@ namespace PetHospital.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SavePets.Data.Entities.Animal", b =>
+            modelBuilder.Entity("PetHospital.Data.Entities.Animal", b =>
                 {
-                    b.HasOne("PetHospital.Data.Entities.Identity.User", "User")
-                        .WithMany("Animals")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("AnimalClinic");
 
-                    b.Navigation("User");
+                    b.Navigation("Diseases");
+
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("PetHospital.Data.Entities.Clinic", b =>
@@ -647,15 +656,6 @@ namespace PetHospital.Data.Migrations
                 {
                     b.Navigation("User")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SavePets.Data.Entities.Animal", b =>
-                {
-                    b.Navigation("AnimalClinic");
-
-                    b.Navigation("Diseases");
-
-                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

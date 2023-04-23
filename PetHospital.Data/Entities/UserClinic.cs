@@ -7,7 +7,7 @@ namespace PetHospital.Data.Entities
     {
         public string UserId { get; set; } = string.Empty;
         public string ClinicId { get; set; } = string.Empty;
-        public virtual Clinic Clinic { get; set; } = new Clinic();
-        public virtual User User { get; set; } = new User();
+        public virtual Clinic Clinic { get; set; }
+        public virtual User User { get; set; }
     }
 }

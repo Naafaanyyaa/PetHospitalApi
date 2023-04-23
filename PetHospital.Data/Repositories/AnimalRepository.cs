@@ -1,12 +1,6 @@
 ﻿using PetHospital.Data.Entities;
 using PetHospital.Data.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PetHospital.Data.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace PetHospital.Data.Repositories
