@@ -28,6 +28,8 @@ namespace PetHospital.Data
             services.AddScoped<IClinicRepository, ClinicRepository>();
             services.AddScoped<IContactsRepository, ContactsRepository>();
             services.AddScoped<IAnimalRepository, AnimalRepository>();
+            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+            services.AddScoped<IDiseasesRepository, DiseasesRepository>();
 
             return services;
         }

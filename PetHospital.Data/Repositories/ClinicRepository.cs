@@ -49,7 +49,7 @@ namespace PetHospital.Data.Repositories
                 userClinic.UserId = user.Id;
                 userClinic.CreatedDate = DateTime.Now;
                 userClinic.User = user;
-
+                
                 entity.UserClinic = new List<UserClinic> { userClinic };
            
                 await _db.AddAsync(entity);

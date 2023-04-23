@@ -17,7 +17,7 @@ namespace PetHospital.Business.Models.Response
         public AnimalType AnimalType { get; set; }
         public string UserId { get; set; } = string.Empty;
         public virtual List<PhotoResponse> Photos { get; set; } = new List<PhotoResponse>();
-        public virtual List<DiseasesResponse> Diseases { get; set; } = new List<DiseasesResponse>();
+        public virtual List<DiseaseResponse> Diseases { get; set; } = new List<DiseaseResponse>();
         public virtual UserResponse User { get; set; } = new UserResponse();
     }
 }

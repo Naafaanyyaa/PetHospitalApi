@@ -23,7 +23,7 @@ namespace PetHospital.Api.Controllers
        [HttpGet("[action]")]
        [Authorize]
        [ProducesResponseType(typeof(List<ClinicResponse>), StatusCodes.Status200OK)]
-       public async Task<IActionResult> GetClinicByRequest([FromQuery] AnimalAllRequest request)
+       public async Task<IActionResult> GetAnimalByRequest([FromQuery] AnimalAllRequest request)
        {
            var result = await _animalService.GetAllPetsByRequest(request);
            return StatusCode(StatusCodes.Status200OK, result);

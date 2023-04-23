@@ -2,13 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHospital.Business.Interfaces;
-using System.Net;
 using PetHospital.Business.Models.Request;
 using PetHospital.Business.Models.Response;
 using System.Security.Claims;
-using PetHospital.Data.Entities;
-using PetHospital.Business.Services;
-using PetHospital.Data.Entities.Identity;
 
 namespace PetHospital.Api.Controllers
 {
@@ -82,9 +78,6 @@ namespace PetHospital.Api.Controllers
             var result = await _clinicService.RegisterDoctor(userId, clinicId, request);
             return StatusCode(StatusCodes.Status201Created, result);
         }
-        //TODO: 1) Add ability to add doctor to clinic
-        //2) statistics with animal and users
-        //3) register user in this clinic
-
+        //TODO: 2) statistics with animal and users
     }
 }

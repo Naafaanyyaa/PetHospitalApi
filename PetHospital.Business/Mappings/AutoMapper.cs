@@ -19,9 +19,10 @@ namespace PetHospital.Business.Mappings
             CreateMap<UserRequest, User>();
             CreateMap<Animal, AnimalResponse>();
             CreateMap<AnimalRequest, Animal>();
-            CreateMap<Diseases, DiseasesResponse>();
+            CreateMap<Diseases, DiseaseResponse>();
             CreateMap<Photo, PhotoResponse>();
             CreateMap<DoctorRegistrationRequest, User>();
+            CreateMap<DiseaseRequest, Diseases>();
         }
     }
 }
