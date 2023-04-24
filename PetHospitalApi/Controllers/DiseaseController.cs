@@ -20,7 +20,7 @@ namespace PetHospital.Api.Controllers
         }
 
         [HttpGet("[action]/{animalId}")]
-        [Authorize]
+        [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(List<DiseaseResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDiseaseList(string animalId)
         {
@@ -29,7 +29,7 @@ namespace PetHospital.Api.Controllers
         }
 
         [HttpGet("[action]")]
-        [Authorize]
+        [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDiseaseById(string diseaseId)
         {
@@ -38,7 +38,7 @@ namespace PetHospital.Api.Controllers
         }
 
         [HttpPost("[action]/{animalId}")]
-        [Authorize]
+        [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddDisease(string animalId, [FromBody] DiseaseRequest request)
         {
@@ -47,7 +47,7 @@ namespace PetHospital.Api.Controllers
         }
 
         [HttpPut("[action]")]
-        [Authorize]
+        [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDisease(string diseaseId, [FromBody] DiseaseRequest request)
         {
@@ -56,7 +56,7 @@ namespace PetHospital.Api.Controllers
         }
 
         [HttpDelete("[action]")]
-        [Authorize]
+        [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDisease(string diseaseId)
         {

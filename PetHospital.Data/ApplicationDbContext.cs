@@ -100,9 +100,5 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
             .HasForeignKey(x => x.AnimalId)
             .HasPrincipalKey(x => x.Id)
             .OnDelete(DeleteBehavior.Cascade);
-        //modelBuilder
-        //    .Entity<User>()
-        //    .HasMany(x => x.Clinic)
-        //    .WithMany(x => x.User);
     }
 }

@@ -20,7 +20,7 @@ namespace PetHospital.Api.Controllers
             _userService = userService;
         }
 
-        [HttpGet("getUserInfo")]
+        [HttpGet("[action]")]
         [Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserInfo()
@@ -30,7 +30,7 @@ namespace PetHospital.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPatch("ChangePassword")]
+        [HttpPatch("[action]")]
         [Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdatePassword([FromBody]ChangePasswordRequest newPassword)
