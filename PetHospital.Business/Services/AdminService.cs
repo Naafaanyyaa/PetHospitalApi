@@ -32,7 +32,7 @@ namespace PetHospital.Business.Services
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(user), userId);
+                throw new NotFoundException("User is not found");
             }
 
             user.IsBanned = !user.IsBanned;
@@ -50,7 +50,7 @@ namespace PetHospital.Business.Services
 
             if (clinic == null)
             {
-                throw new NotFoundException(nameof(clinic), clinicId);
+                throw new NotFoundException("Clinic is not found");
             }
 
             clinic.IsBanned = !clinic.IsBanned;
@@ -77,7 +77,7 @@ namespace PetHospital.Business.Services
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(user), userId);
+                throw new NotFoundException("User is not found");
             }
 
             if (usersWithRole.Contains(user))

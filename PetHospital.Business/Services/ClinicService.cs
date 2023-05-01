@@ -49,7 +49,7 @@ namespace PetHospital.Business.Services
 
             if (clinic == null)
             {
-                throw new NotFoundException(nameof(clinic), requestId);
+                throw new NotFoundException("Clinic is not found");
             }
 
             var result = _mapper.Map<Clinic, ClinicResponse>(clinic);
@@ -63,7 +63,7 @@ namespace PetHospital.Business.Services
 
             if (owner == null)
             {
-                throw new NotFoundException(nameof(owner), UserId);
+                throw new NotFoundException("User is not found");
             }
 
             var clinic = _mapper.Map<ClinicRequest, Clinic>(request);
@@ -85,7 +85,7 @@ namespace PetHospital.Business.Services
 
             if (!userId.Equals(hospital.UserClinic[0].UserId))
             {
-                throw new ValidationException("Hospital was not created by this user.");
+                throw new ValidationException("Hospital was not created by this user");
             }
 
             await _clinicRepository.DeleteById(hospitalId);
@@ -98,17 +98,17 @@ namespace PetHospital.Business.Services
 
             if (hospital == null)
             {
-                throw new ValidationException("Hospital not found.");
+                throw new ValidationException("Hospital is not found");
             }
 
             if (hospital.IsBanned == true)
             {
-                throw new ValidationException("Hospital was banned.");
+                throw new ValidationException("Hospital was banned");
             }
 
             if (!hospital.UserClinic.Exists(x => x.UserId.Equals(userId)))
             {
-                throw new ValidationException("Hospital was not created by this user.");
+                throw new ValidationException("Hospital was not created by this user");
             }
 
             var updatedHospitalInfo = _mapper.Map<ClinicRequest, Clinic>(request);
@@ -135,7 +135,7 @@ namespace PetHospital.Business.Services
 
             if (!clinic.UserClinic.Exists(x => x.UserId == userId && x.ClinicId == clinicId))
             {
-                throw new NotFoundException("User is not host of this user");
+                throw new NotFoundException("User is not host of this clinic");
             }
 
             var isUserExists = await _userManager.Users.AnyAsync(x => x.Email == userRequest.Email || x.UserName == userRequest.UserName);

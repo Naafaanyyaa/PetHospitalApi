@@ -39,7 +39,7 @@ namespace PetHospital.Business.Services
 
             if (disease == null)
             {
-                throw new NotFoundException(nameof(disease), diseaseId);
+                throw new NotFoundException("Disease is not found");
             }
 
             var result = _mapper.Map<Diseases, DiseaseResponse>(disease);
@@ -51,7 +51,7 @@ namespace PetHospital.Business.Services
 
             if (animal == null)
             {
-                throw new NotFoundException(nameof(animal), animalId);
+                throw new NotFoundException("Animal is not found");
             }
             var disease = _mapper.Map<DiseaseRequest, Diseases>(request);
 
@@ -71,7 +71,7 @@ namespace PetHospital.Business.Services
 
             if (previousDisease == null)
             {
-                throw new NotFoundException(nameof(previousDisease), diseaseId);
+                throw new NotFoundException("Disease is not found");
             }
 
             var disease = _mapper.Map<DiseaseRequest, Diseases>(request, previousDisease);

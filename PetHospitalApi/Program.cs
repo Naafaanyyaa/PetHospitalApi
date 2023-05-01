@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -23,6 +25,17 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
     builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
 }));
+
+builder.Services.AddLocalization();
+
+builder.Services.AddRequestLocalization(x =>
+{
+    x.DefaultRequestCulture = new RequestCulture("en");
+    x.ApplyCurrentCultureToResponseHeaders = true;
+    x.SupportedCultures = new List<CultureInfo>{new("uk"), new("en")};
+    x.SupportedUICultures = new List<CultureInfo> { new("uk"), new("en") };
+});
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -82,7 +95,11 @@ builder.Services.AddSwaggerGen(c =>
 
 
 var app = builder.Build();
+
+app.UseRequestLocalization();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

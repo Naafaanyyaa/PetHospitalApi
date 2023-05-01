@@ -50,7 +50,7 @@ namespace PetHospital.Business.Services
             var source = await _animalRepository.GetByIdAsync(requestId);
 
             if (source == null)
-                throw new NotFoundException(nameof(Animal), requestId);
+                throw new NotFoundException("Animal is not found");
 
             var result = _mapper.Map<Animal, AnimalResponse>(source);
             return result;
@@ -62,7 +62,7 @@ namespace PetHospital.Business.Services
 
             if (owner == null)
             {
-                throw new NotFoundException(nameof(owner), userId);
+                throw new NotFoundException("User is not found");
             }
 
             var date = DateTime.Now;
@@ -80,7 +80,7 @@ namespace PetHospital.Business.Services
 
                 if (clinic == null)
                 {
-                    throw new NotFoundException(nameof(clinic), clinicId);
+                    throw new NotFoundException("Clinic is not found");
                 }
 
                 AnimalClinic animalClinic = new AnimalClinic()
@@ -111,7 +111,7 @@ namespace PetHospital.Business.Services
 
             if (animal == null)
             {
-                throw new NotFoundException("Animal not found");
+                throw new NotFoundException("Animal is not found");
             }
 
             if (userId != animal.UserId)
@@ -128,7 +128,7 @@ namespace PetHospital.Business.Services
 
             if (animal == null)
             {
-                throw new NotFoundException(nameof(animal), animalId);
+                throw new NotFoundException("Animal is not found");
             }
 
             if (animal.UserId != userId)

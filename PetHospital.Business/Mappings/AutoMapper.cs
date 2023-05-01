@@ -15,7 +15,8 @@ namespace PetHospital.Business.Mappings
             CreateMap<User, RegistrationResponse>();
             CreateMap<ClinicRequest, Clinic>();
             CreateMap<Clinic, ClinicResponse>();
-            CreateMap<User, UserResponse>();
+            CreateMap<User, UserResponse>()
+                .ForMember(x => x.Id, o => o.MapFrom(s => s.Id));
             CreateMap<UserRequest, User>();
             CreateMap<Animal, AnimalResponse>();
             CreateMap<AnimalRequest, Animal>();

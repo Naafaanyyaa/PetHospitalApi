@@ -31,7 +31,7 @@ namespace PetHospital.Business.Services
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(user), userId);
+                throw new NotFoundException("User is not found");
             }
 
             var contacts = await _contactsRepository.GetByIdAsync(userId);
@@ -47,7 +47,7 @@ namespace PetHospital.Business.Services
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(user), userId);
+                throw new NotFoundException("User is not found");
             }
 
             user.FirstName = userRequest.FirstName;
@@ -68,7 +68,7 @@ namespace PetHospital.Business.Services
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(user), userId);
+                throw new NotFoundException("User is not found");
             }
 
             var identityResult = await _userManager.DeleteAsync(user);
@@ -85,7 +85,7 @@ namespace PetHospital.Business.Services
 
             if (user == null)
             {
-                throw new NotFoundException(nameof(user), userId);
+                throw new NotFoundException("User is not found");
             }
 
             if (!await _userManager.CheckPasswordAsync(user, passwordRequest.OldPassword))

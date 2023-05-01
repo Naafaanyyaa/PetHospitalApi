@@ -58,7 +58,7 @@ namespace PetHospital.Business.Services
             }
             catch (Exception ex)
             {
-                throw new ValidationException("Cannot create payment.");
+                throw new ValidationException("Cannot create payment");
             }
             return _createdPayment;
         }
