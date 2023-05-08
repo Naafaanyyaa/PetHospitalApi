@@ -70,7 +70,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Save Pets API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pet Hospital API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
