@@ -1,12 +1,14 @@
 ﻿using PetHospital.Data.Enums;
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PetHospital.Business.Models.Request
 {
-    public class AnimalRequest
+    public class AnimalUpdateRequest
     {
-        public string? ClinicId { get; set; }
-        public string UserId { get; set; }
         public string? AnimalName { get; set; }
         public string? AnimalDescription { get; set; }
         public AnimalType AnimalType { get; set; }

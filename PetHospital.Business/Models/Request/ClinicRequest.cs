@@ -13,5 +13,7 @@ namespace PetHospital.Business.Models.Request
         public string Description { get; set; } = string.Empty;
         [Required]
         public string Phone { get; set; } = string.Empty;
+        [Required]
+        public string HospitalId { get; set; } = string.Empty;
     }
 }

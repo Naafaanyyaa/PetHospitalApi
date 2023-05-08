@@ -53,10 +53,10 @@ namespace PetHospital.Api.Controllers
         [HttpPut("[action]/{hospitalId}")]
         [Authorize(Roles = "HospitalHost")]
         [ProducesResponseType(typeof(ClinicResponse),StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(string hospitalId,[FromQuery] ClinicRequest request)
+        public async Task<IActionResult> Update([FromBody] ClinicRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await _clinicService.UpdateByIdAsync(userId, hospitalId, request);
+            var result = await _clinicService.UpdateByIdAsync(userId,  request);
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
@@ -69,7 +69,7 @@ namespace PetHospital.Api.Controllers
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("[action]/{clinicId}")]
         [Authorize(Roles = "HospitalHost")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateDoctor([FromBody] DoctorRegistrationRequest request, string clinicId)
@@ -78,6 +78,5 @@ namespace PetHospital.Api.Controllers
             var result = await _clinicService.RegisterDoctor(userId, clinicId, request);
             return StatusCode(StatusCodes.Status201Created, result);
         }
-        //TODO: 2) statistics with animal and users
     }
 }

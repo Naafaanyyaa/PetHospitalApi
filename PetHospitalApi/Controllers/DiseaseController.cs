@@ -46,7 +46,7 @@ namespace PetHospital.Api.Controllers
             return StatusCode(StatusCodes.Status201Created, result);
         }
 
-        [HttpPut("[action]")]
+        [HttpPut("[action]/{diseaseId}")]
         [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDisease(string diseaseId, [FromBody] DiseaseRequest request)
@@ -55,7 +55,7 @@ namespace PetHospital.Api.Controllers
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete("[action]/{diseaseId}")]
         [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteDisease(string diseaseId)

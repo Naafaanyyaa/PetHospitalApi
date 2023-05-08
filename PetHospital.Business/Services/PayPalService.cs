@@ -37,8 +37,7 @@ namespace PetHospital.Business.Services
                                 currency = "EUR",
                                 total = type switch
                                 {
-                                    SubscriptionType.Default => "5",
-                                    SubscriptionType.Big => "30"
+                                    SubscriptionType.Default => "100"
                                 }
                                 
                             },

@@ -56,9 +56,9 @@ namespace PetHospital.Business.Services
             return result;
         }
 
-        public async Task<AnimalResponse> CreateAsync(AnimalRequest request, string userId, string? clinicId, IFormFileCollection files, string directoryToSave)
+        public async Task<AnimalResponse> CreateAsync(AnimalRequest request, IFormFileCollection files, string directoryToSave)
         {
-            var owner = await _userManager.FindByIdAsync(userId);
+            var owner = await _userManager.FindByIdAsync(request.UserId);
 
             if (owner == null)
             {
@@ -74,9 +74,9 @@ namespace PetHospital.Business.Services
             animal.User = owner;
 
 
-            if (!clinicId.IsNullOrEmpty())
+            if (!request.ClinicId.IsNullOrEmpty())
             {
-                var clinic = await _clinicRepository.GetByIdAsync(clinicId);
+                var clinic = await _clinicRepository.GetByIdAsync(request.ClinicId);
 
                 if (clinic == null)
                 {
@@ -85,7 +85,7 @@ namespace PetHospital.Business.Services
 
                 AnimalClinic animalClinic = new AnimalClinic()
                 {
-                    ClinicId = clinicId,
+                    ClinicId = request.ClinicId,
                     AnimalId = animal.Id,
                     CreatedDate = date
                 };
@@ -122,7 +122,8 @@ namespace PetHospital.Business.Services
             await _animalRepository.DeleteAsync(animal);   
         }
 
-        public async Task<AnimalResponse> UpdateByIdAsync(string userId, string animalId, AnimalRequest request)
+        //TODO: change animalRequest
+        public async Task<AnimalResponse> UpdateByIdAsync(string userId, string animalId, AnimalUpdateRequest request)
         {
             var animal = await _animalRepository.GetByIdAsync(animalId);
 
@@ -136,7 +137,7 @@ namespace PetHospital.Business.Services
                 throw new ValidationException("Doesn't belong to this user");
             }
 
-            var updateModel = _mapper.Map<AnimalRequest, Animal>(request, animal);
+            var updateModel = _mapper.Map<AnimalUpdateRequest, Animal>(request, animal);
 
             updateModel.LastModifiedDate = DateTime.Now;
 
@@ -147,35 +148,23 @@ namespace PetHospital.Business.Services
             return result;
         }
 
-        public async Task<AnimalResponse> AddExistingAnimalToClinic(string animalId, string clinicId)
+        public async Task<AnimalResponse> AddExistingAnimalToClinic(AddExistingAnimalRequest addExistingAnimalRequest)
         {
-            var clinic = await _clinicRepository.GetByIdAsync(clinicId);
+            var clinic = await _clinicRepository.GetByIdAsync(addExistingAnimalRequest.ClinicId);
 
             if (clinic == null)
             {
                 throw new NotFoundException("Clinic is not found");
             }
 
-            var animal = await _animalRepository.GetByIdAsync(animalId);
+            var animal = await _animalRepository.GetByIdAsync(addExistingAnimalRequest.AnimalId);
 
-            if (animal.AnimalClinic.Exists(x => (x.ClinicId == clinicId && x.AnimalId == animalId)))
+            if (animal.AnimalClinic.Exists(x => (x.ClinicId == addExistingAnimalRequest.ClinicId && x.AnimalId == addExistingAnimalRequest.AnimalId)))
             {
                 throw new ValidationException("This animal has already been declared");
             }
 
-            AnimalClinic animalClinic = new AnimalClinic()
-            {
-                ClinicId = clinicId,
-                AnimalId = animal.Id,
-                CreatedDate = DateTime.Now
-            };
-
-            animal.AnimalClinic = new List<AnimalClinic>()
-            {
-                animalClinic
-            };
-
-            await _animalRepository.UpdateAsync(animal);
+            await _animalRepository.UpdateAsync(animal, clinic);
 
             var result = _mapper.Map<Animal, AnimalResponse>(animal);
 

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using PayPal.Api;
 using PetHospital.Business.Exceptions;
 using PetHospital.Business.Interfaces;
 using PetHospital.Data.Enums;
+using PetHospital.Data.Interfaces;
 
 
 namespace PetHospital.API.Controllers
@@ -15,9 +17,11 @@ namespace PetHospital.API.Controllers
     public class PayPalController : ControllerBase
     {
         private readonly IPayPalService _payPalService;
+        private readonly ISubscriptionService _subscriptionService;
 
-        public PayPalController(IPayPalService payPal)
+        public PayPalController(IPayPalService payPal, ISubscriptionService subscriptionService)
         {
+            _subscriptionService = subscriptionService;
             _payPalService = payPal;
         }
 
@@ -26,12 +30,15 @@ namespace PetHospital.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreatePayment(SubscriptionType type)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var result = await _payPalService.CreatePayment(type);
 
             foreach (var link in result.links)
             {
                 if (link.rel.Equals("approval_url"))
                 {
+                    await _subscriptionService.AddSubscriptionAsync(userId, type);
+
                     return StatusCode(StatusCodes.Status201Created, link.href);
                 }
             }
@@ -40,7 +47,7 @@ namespace PetHospital.API.Controllers
         }
 
         [HttpGet("[action]")]
-        [AllowAnonymous]
+        [Authorize]
         [ProducesResponseType(typeof(Payment), StatusCodes.Status200OK)]
         public async Task<IActionResult> ExecutePayment(string paymentId, string token, string payerId)
         {

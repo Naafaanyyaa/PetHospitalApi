@@ -8,11 +8,9 @@ namespace PetHospital.Business.Interfaces
     {
         Task<List<AnimalResponse>> GetAllPetsByRequest(AnimalAllRequest request);
         Task<AnimalResponse> GetPetById(string requestId);
-        Task<AnimalResponse> CreateAsync(AnimalRequest request, string userId, string? clinicId, IFormFileCollection files, string directoryToSave);
+        Task<AnimalResponse> CreateAsync(AnimalRequest request, IFormFileCollection files, string directoryToSave);
         Task DeleteByIdAsync(string userId, string animalId);
-        Task<AnimalResponse> UpdateByIdAsync(string userid, string animalId, AnimalRequest request);
-        Task<AnimalResponse> AddExistingAnimalToClinic(string animalId, string clinicId);
-
-        //TODO: to be able to add diseases 4 pet
+        Task<AnimalResponse> UpdateByIdAsync(string userid, string animalId, AnimalUpdateRequest request);
+        Task<AnimalResponse> AddExistingAnimalToClinic(AddExistingAnimalRequest addExistingAnimalRequest);
     }
 }

@@ -1,4 +1,5 @@
-﻿using PetHospital.Data.Entities;
+﻿using AutoMapper;
+using PetHospital.Data.Entities;
 using PetHospital.Data.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,11 @@ namespace PetHospital.Data.Repositories
     public class AnimalRepository : Repository<Animal>, IAnimalRepository
     {
         private readonly ILogger<Animal> _logger;
-        public AnimalRepository(ApplicationDbContext db, ILogger<Animal> logger) : base(db)
+        private readonly IMapper _mapper;
+        public AnimalRepository(ApplicationDbContext db, ILogger<Animal> logger, IMapper mapper) : base(db)
         {
             _logger = logger;
+            _mapper = mapper;
         }
 
         public override async Task<Animal> AddAsync(Animal entity)
@@ -87,6 +90,30 @@ namespace PetHospital.Data.Repositories
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 _db.Entry(entity).State = EntityState.Detached;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError("Error while deleting a new animal: {EMessage}", e.Message);
+            }
+        }
+        public async Task UpdateAsync(Animal animal, Clinic clinic)
+        {
+
+            await using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                AnimalClinic animalClinic = new AnimalClinic()
+                {
+                    ClinicId = clinic.Id,
+                    AnimalId = animal.Id,
+                    CreatedDate = DateTime.Now
+                };
+                animal.AnimalClinic = new List<AnimalClinic> { animalClinic };
+
+                await _db.AddAsync(animalClinic);
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
             catch (Exception e)
             {

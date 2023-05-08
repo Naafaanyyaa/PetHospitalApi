@@ -92,9 +92,9 @@ namespace PetHospital.Business.Services
 
         }
 
-        public async Task<ClinicResponse> UpdateByIdAsync(string userId, string hospitalId, ClinicRequest request)
+        public async Task<ClinicResponse> UpdateByIdAsync(string userId, ClinicRequest request)
         {
-            var hospital = await _clinicRepository.GetByIdAsync(hospitalId);
+            var hospital = await _clinicRepository.GetByIdAsync(request.HospitalId);
 
             if (hospital == null)
             {

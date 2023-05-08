@@ -40,7 +40,7 @@ namespace PetHospital.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("[action]")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAccount()
@@ -50,8 +50,8 @@ namespace PetHospital.Api.Controllers
             return StatusCode(StatusCodes.Status200OK);
         }
 
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [HttpPut("[action]")]
+        [Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateUserInfo(UserRequest userRequest)
         {

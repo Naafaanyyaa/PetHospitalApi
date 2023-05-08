@@ -24,6 +24,8 @@ namespace PetHospital.Business
             services.AddScoped<IAnimalService, AnimalService>();
             services.AddScoped<IPayPalService, PayPalService>();
             services.AddScoped<IDiseaseService, DiseaseService>();
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
+            services.AddHostedService<RabbitMqListenerService>();
             services.AddScoped<JwtHandler>();
 
             return services;

@@ -41,9 +41,9 @@ namespace PetHospital.Api.Controllers
        [HttpPost("[action]")]
        [Authorize(Roles = "Doctor, User")]
        [ProducesResponseType(typeof(ClinicResponse), StatusCodes.Status200OK)]
-       public async Task<IActionResult> CreateAnimal([FromForm] AnimalRequest request, string? clinicId, string userId)
+       public async Task<IActionResult> CreateAnimal([FromForm] AnimalRequest request)
        {
-           var result = await _animalService.CreateAsync(request, userId, clinicId, Request.Form.Files, Directory.GetCurrentDirectory());
+           var result = await _animalService.CreateAsync(request, Request.Form.Files, Directory.GetCurrentDirectory());
            return StatusCode(StatusCodes.Status201Created, result);
        }
 
@@ -60,19 +60,19 @@ namespace PetHospital.Api.Controllers
        [HttpPut("[action]/{animalId}")]
        [Authorize(Roles = "User")]
        [ProducesResponseType(StatusCodes.Status200OK)]
-       public async Task<IActionResult> UpdateById(string animalId, [FromBody] AnimalRequest request)
+       public async Task<IActionResult> UpdateById(string animalId, [FromBody] AnimalUpdateRequest request)
        {
            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
            var result = await _animalService.UpdateByIdAsync(userId, animalId, request);
            return StatusCode(StatusCodes.Status200OK, result);
        }
 
-       [HttpPut("[action]/{animalId}")]
+       [HttpPut("[action]")]
        [Authorize(Roles = "Doctor")]
        [ProducesResponseType(StatusCodes.Status200OK)]
-       public async Task<IActionResult> AddExistingAnimalToClinic(string animalId, string clinicId)
+       public async Task<IActionResult> AddExistingAnimalToClinic(AddExistingAnimalRequest addExistingAnimalRequest)
        { 
-           var result = await _animalService.AddExistingAnimalToClinic(animalId, clinicId);
+           var result = await _animalService.AddExistingAnimalToClinic(addExistingAnimalRequest);
            return StatusCode(StatusCodes.Status200OK, result);
        }
     }
