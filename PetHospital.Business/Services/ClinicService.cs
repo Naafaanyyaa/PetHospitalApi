@@ -43,7 +43,7 @@ namespace PetHospital.Business.Services
             return result;
         }
 
-        public async Task<ClinicResponse> GetClinicById(string requestId)
+        public async Task<ClinicResponse> GetClinicById(string requestId, string userId)
         {
             var clinic = await _clinicRepository.GetByIdAsync(requestId);
 
@@ -54,12 +54,17 @@ namespace PetHospital.Business.Services
 
             var result = _mapper.Map<Clinic, ClinicResponse>(clinic);
 
+            if (await _clinicRepository.IsUserCreatorOfClinicAsync(userId, requestId))
+            {
+                result.IsCreatedByUser = true;
+            }
+
             return result;
         }
 
-        public async Task<ClinicResponse> CreateAsync(ClinicRequest request, string UserId)
+        public async Task<ClinicResponse> CreateAsync(ClinicRequest request, string userId)
         {
-            var owner = await _userManager.FindByIdAsync(UserId);
+            var owner = await _userManager.FindByIdAsync(userId);
 
             if (owner == null)
             {
@@ -83,7 +88,7 @@ namespace PetHospital.Business.Services
         {
             var hospital = await _clinicRepository.GetByIdAsync(hospitalId);
 
-            if (!userId.Equals(hospital.UserClinic[0].UserId))
+            if (!await _clinicRepository.IsUserCreatorOfClinicAsync(userId, hospitalId))
             {
                 throw new ValidationException("Hospital was not created by this user");
             }
@@ -92,9 +97,9 @@ namespace PetHospital.Business.Services
 
         }
 
-        public async Task<ClinicResponse> UpdateByIdAsync(string userId, ClinicRequest request)
+        public async Task<ClinicResponse> UpdateByIdAsync(string userId, string hospitalId, ClinicRequest request)
         {
-            var hospital = await _clinicRepository.GetByIdAsync(request.HospitalId);
+            var hospital = await _clinicRepository.GetByIdAsync(hospitalId);
 
             if (hospital == null)
             {
@@ -106,7 +111,7 @@ namespace PetHospital.Business.Services
                 throw new ValidationException("Hospital was banned");
             }
 
-            if (!hospital.UserClinic.Exists(x => x.UserId.Equals(userId)))
+            if (!await _clinicRepository.IsUserCreatorOfClinicAsync(userId, hospitalId))
             {
                 throw new ValidationException("Hospital was not created by this user");
             }
@@ -124,18 +129,18 @@ namespace PetHospital.Business.Services
             return result;
         }
 
-        public async Task<UserResponse> RegisterDoctor(string userId, string clinicId, DoctorRegistrationRequest userRequest)
+        public async Task<UserResponse> RegisterDoctor(string userId, string hospitalId, DoctorRegistrationRequest userRequest)
         {
-            var clinic = await _clinicRepository.GetByIdAsync(clinicId);
+            var clinic = await _clinicRepository.GetByIdAsync(hospitalId);
 
             if (clinic == null)
             {
-                throw new NotFoundException(nameof(clinic), clinicId);
+                throw new NotFoundException(nameof(clinic), hospitalId);
             }
 
-            if (!clinic.UserClinic.Exists(x => x.UserId == userId && x.ClinicId == clinicId))
+            if (!await _clinicRepository.IsUserCreatorOfClinicAsync(userId, hospitalId))
             {
-                throw new NotFoundException("User is not host of this clinic");
+                throw new ValidationException("Hospital was not created by this user");
             }
 
             var isUserExists = await _userManager.Users.AnyAsync(x => x.Email == userRequest.Email || x.UserName == userRequest.UserName);
@@ -150,7 +155,7 @@ namespace PetHospital.Business.Services
 
             UserClinic userClinic = new UserClinic()
             {
-                ClinicId = clinicId,
+                ClinicId = hospitalId,
                 UserId = user.Id,
                 CreatedDate = DateTime.Now
             };

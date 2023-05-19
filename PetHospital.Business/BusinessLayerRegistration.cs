@@ -5,6 +5,7 @@ using PetHospital.Business.Services;
 using PetHospital.Data;
 using System.Reflection;
 using PetHospital.Business.Infrastructure;
+using Microsoft.Extensions.Hosting;
 
 namespace PetHospital.Business
 {
@@ -25,7 +26,13 @@ namespace PetHospital.Business
             services.AddScoped<IPayPalService, PayPalService>();
             services.AddScoped<IDiseaseService, DiseaseService>();
             services.AddScoped<ISubscriptionService, SubscriptionService>();
-            services.AddHostedService<RabbitMqListenerService>();
+            services.AddScoped<IIoTDiseaseService, IoTDiseaseService>();
+            //services.AddHostedService<RabbitMqListenerService>();
+            services.AddSingleton<IHostedService, RabbitMqListenerService>(provider =>
+            {
+                var scopedIoTDiseaseService = provider.CreateScope().ServiceProvider.GetRequiredService<IIoTDiseaseService>();
+                return new RabbitMqListenerService(scopedIoTDiseaseService);
+            });
             services.AddScoped<JwtHandler>();
 
             return services;

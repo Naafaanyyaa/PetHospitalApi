@@ -1,4 +1,6 @@
 ﻿
+using PetHospital.Business.Models.Request;
+
 namespace PetHospital.Business.Models.Response
 {
     public class DiseaseResponse : BaseResponse.BaseResponse

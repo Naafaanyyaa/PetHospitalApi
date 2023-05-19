@@ -25,6 +25,8 @@ namespace PetHospital.Business.Mappings
             CreateMap<DoctorRegistrationRequest, User>();
             CreateMap<DiseaseRequest, Diseases>();
             CreateMap<AnimalUpdateRequest, Animal>();
+            CreateMap<ClinicUpdateRequest, Clinic>();
+            CreateMap<DiseaseIoTRequest, Diseases>();
         }
     }
 }

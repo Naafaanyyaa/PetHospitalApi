@@ -51,7 +51,7 @@ namespace PetHospital.Business.Infrastructure
                 issuer: _jwtSettings["Issuer"],
                 audience: _jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: signingCredentials);
 
             return tokenOptions;

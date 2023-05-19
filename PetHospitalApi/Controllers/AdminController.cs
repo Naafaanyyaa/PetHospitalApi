@@ -36,12 +36,12 @@ namespace PetHospital.Api.Controllers
             var result = await _adminService.BanClinic(clinicId);
             return StatusCode(StatusCodes.Status201Created, result);
         }
-        [HttpPatch("[action]/{userId}")]
+        [HttpPatch("[action]")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
-        public async Task<IActionResult> ChangeRole(string userId, RoleEnum role)
+        public async Task<IActionResult> ChangeRole([FromBody] ChangeRoleRequest request)
         {
-            var result = await _adminService.ChangeRole(userId, role);
+            var result = await _adminService.ChangeRole(request.userId, request.Role);
             return StatusCode(StatusCodes.Status200OK, result);
         }
         [HttpGet("[action]")]

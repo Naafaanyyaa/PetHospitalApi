@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json;
+using PetHospital.Business.Interfaces;
+using PetHospital.Business.Models.Request;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -14,13 +17,15 @@ namespace PetHospital.Business.Services
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly IIoTDiseaseService _service;
 
-        public RabbitMqListenerService()
+        public RabbitMqListenerService(IIoTDiseaseService service)
         {
             var factory = new ConnectionFactory { HostName = "localhost" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: "MyQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _service = service;
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -31,7 +36,10 @@ namespace PetHospital.Business.Services
             {
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-                // Каким-то образом обрабатываем полученное сообщение
+                var result = JsonSerializer.Deserialize<DiseaseIoTRequest>(content);
+
+                _service.AddDiseaseFromIot(result);
+
                 Debug.WriteLine($"Получено сообщение: {content}");
 
                 _channel.BasicAck(ea.DeliveryTag, false);

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PayPal.Api;
 using PetHospital.Business.Exceptions;
 using PetHospital.Business.Interfaces;
+using PetHospital.Business.Models.Request;
 using PetHospital.Data.Enums;
 using PetHospital.Data.Interfaces;
 
@@ -25,21 +26,21 @@ namespace PetHospital.API.Controllers
             _payPalService = payPal;
         }
 
-        [HttpGet("[action]")]
+        [HttpPost("[action]")]
         [Authorize]
-        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreatePayment(SubscriptionType type)
+        [ProducesResponseType(typeof(Links), StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreatePayment([FromBody]SubRequest type)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await _payPalService.CreatePayment(type);
+            var result = await _payPalService.CreatePayment(type.type);
 
             foreach (var link in result.links)
             {
                 if (link.rel.Equals("approval_url"))
                 {
-                    await _subscriptionService.AddSubscriptionAsync(userId, type);
+                    await _subscriptionService.AddSubscriptionAsync(userId, type.type);
 
-                    return StatusCode(StatusCodes.Status201Created, link.href);
+                    return StatusCode(StatusCodes.Status201Created, link);
                 }
             }
 

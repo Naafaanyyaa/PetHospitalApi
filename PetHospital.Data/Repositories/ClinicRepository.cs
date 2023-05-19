@@ -43,6 +43,7 @@ namespace PetHospital.Data.Repositories
                 userClinic.UserId = user.Id;
                 userClinic.CreatedDate = DateTime.Now;
                 userClinic.User = user;
+                userClinic.IsCreator = true;
                 
                 entity.UserClinic = new List<UserClinic> { userClinic };
            
@@ -101,7 +102,11 @@ namespace PetHospital.Data.Repositories
                 _logger.LogError("Error while deleting a clinic: {EMessage}", e.Message);
             }
         }
-
+        public async Task<bool> IsUserCreatorOfClinicAsync(string userId, string hospitalId)
+        {
+            return await _db.Clinic.AsNoTracking()
+                .AnyAsync(x => x.Id == hospitalId && x.UserClinic.Any(uc => uc.UserId == userId && uc.IsCreator));
+        }
         public override async Task UpdateAsync(Clinic entity)
         {
 

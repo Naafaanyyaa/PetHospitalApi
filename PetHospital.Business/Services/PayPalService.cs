@@ -47,7 +47,7 @@ namespace PetHospital.Business.Services
                     redirect_urls = new RedirectUrls()
                     {
                         cancel_url = $"{url}/api/PayPal/CancelPayment",
-                        return_url = $"{url}/api/PayPal/ExecutePayment"
+                        return_url = "http://localhost:4200/profile"
                     }
                 };
 

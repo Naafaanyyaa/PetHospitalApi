@@ -25,7 +25,8 @@ namespace PetHospital.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ClinicResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetClinicById(string clinicId)
         {
-            var result = await _clinicService.GetClinicById(clinicId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await _clinicService.GetClinicById(clinicId, userId);
             return Ok(result);
         }
 
@@ -33,7 +34,7 @@ namespace PetHospital.Api.Controllers
         [HttpPost("[action]")]
         [Authorize(Roles = "HospitalHost")] 
         [ProducesResponseType(typeof(IEnumerable<ClinicResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Add([FromQuery] ClinicRequest request)
+        public async Task<IActionResult> Add([FromBody] ClinicRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var result = await _clinicService.CreateAsync(request, userId);
@@ -53,10 +54,10 @@ namespace PetHospital.Api.Controllers
         [HttpPut("[action]/{hospitalId}")]
         [Authorize(Roles = "HospitalHost")]
         [ProducesResponseType(typeof(ClinicResponse),StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update([FromBody] ClinicRequest request)
+        public async Task<IActionResult> Update(string hospitalId, [FromBody] ClinicRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var result = await _clinicService.UpdateByIdAsync(userId,  request);
+            var result = await _clinicService.UpdateByIdAsync(userId, hospitalId,   request);
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
