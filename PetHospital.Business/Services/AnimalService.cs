@@ -190,6 +190,12 @@ namespace PetHospital.Business.Services
                 predicate = ExpressionsHelper.And(predicate, statusPredicate);
             }
 
+            if (!string.IsNullOrWhiteSpace(request.UserId))
+            {
+                Expression<Func<Animal, bool>> userIdPredicate = x => x.UserId == request.UserId;
+                predicate = ExpressionsHelper.And(predicate, userIdPredicate);
+            }
+
             if (request.StartDate.HasValue && request.EndDate.HasValue && request.StartDate < request.EndDate)
             {
                 Expression<Func<Animal, bool>> dateExpression = x => x.CreatedDate > request.StartDate.Value

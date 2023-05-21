@@ -106,5 +106,19 @@ namespace PetHospital.Business.Services
 
             return result;
         }
+
+        public async Task<UserResponse> GetUserByUserName(string name)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == name);
+
+            if (user == null)
+            {
+                throw new NotFoundException("User not found");
+            }
+
+            var result = _mapper.Map<User, UserResponse>(user);
+
+            return result;
+        }
     }
 }

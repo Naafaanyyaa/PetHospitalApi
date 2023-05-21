@@ -45,11 +45,19 @@ namespace PetHospital.Api.Controllers
             return StatusCode(StatusCodes.Status200OK, result);
         }
         [HttpGet("[action]")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Doctor")]
         [ProducesResponseType(typeof(List<UserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserList([FromQuery] UserAllRequest request)
         {
             var result = await _adminService.GetUserList(request);
+            return StatusCode(StatusCodes.Status201Created, result);
+        }
+        [HttpGet("[action]/{userName}")]
+        [Authorize(Roles = "Doctor, User")]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUserByUserName(string userName)
+        {
+            var result = await _adminService.GetUserByUserName(userName);
             return StatusCode(StatusCodes.Status201Created, result);
         }
     }

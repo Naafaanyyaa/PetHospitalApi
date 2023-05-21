@@ -75,7 +75,7 @@ namespace PetHospital.Business.Services
 
             clinic.CreatedDate = DateTime.Now;
 
-            var insertResponse = await _clinicRepository.AddAsync(clinic, owner);
+            var insertResponse = await _clinicRepository.AddAsync(clinic, owner, true);
 
             _logger.LogInformation("Clinic {ClinicId} has been successfully registered", clinic.Id);
 
@@ -157,7 +157,8 @@ namespace PetHospital.Business.Services
             {
                 ClinicId = hospitalId,
                 UserId = user.Id,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+                IsCreator = false
             };
 
             user.UserClinic = new List<UserClinic>()

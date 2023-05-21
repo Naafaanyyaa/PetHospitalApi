@@ -33,7 +33,7 @@ namespace PetHospital.Data.Repositories
             }
         }
 
-        public async Task<Clinic> AddAsync(Clinic entity, User user)
+        public async Task<Clinic> AddAsync(Clinic entity, User user, bool isUserHost)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -43,7 +43,7 @@ namespace PetHospital.Data.Repositories
                 userClinic.UserId = user.Id;
                 userClinic.CreatedDate = DateTime.Now;
                 userClinic.User = user;
-                userClinic.IsCreator = true;
+                userClinic.IsCreator = isUserHost;
                 
                 entity.UserClinic = new List<UserClinic> { userClinic };
            

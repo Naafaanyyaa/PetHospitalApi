@@ -10,5 +10,6 @@ namespace PetHospital.Business.Interfaces
         Task<ClinicResponse> BanClinic(string clinicId);
         Task<UserResponse> ChangeRole(string userId, RoleEnum role);
         Task<List<UserResponse>> GetUserList(UserAllRequest request);
+        Task<UserResponse> GetUserByUserName(string userName);
     }
 }

@@ -11,6 +11,6 @@ namespace PetHospital.Business.Interfaces
         Task<ClinicResponse> CreateAsync(ClinicRequest request, string userId);
         Task DeleteByIdAsync(string userId, string requestId);
         Task<ClinicResponse> UpdateByIdAsync(string userId, string hospitalId, ClinicRequest request);
-        Task<UserResponse> RegisterDoctor(string userId, string clinicId, DoctorRegistrationRequest userRequest);
+        Task<UserResponse>  RegisterDoctor(string userId, string clinicId, DoctorRegistrationRequest userRequest);
     }
 }

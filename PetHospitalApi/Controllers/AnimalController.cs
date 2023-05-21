@@ -75,5 +75,19 @@ namespace PetHospital.Api.Controllers
            var result = await _animalService.AddExistingAnimalToClinic(addExistingAnimalRequest);
            return StatusCode(StatusCodes.Status200OK, result);
        }
+       [HttpGet("[action]/{imageName}")]
+       [Authorize]
+       [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetImage(string imagePath)
+        {
+           if (!System.IO.File.Exists(imagePath))
+           {
+               return NotFound();
+           }
+
+           var imageData = System.IO.File.ReadAllBytes(imagePath);
+
+           return File(imageData, "image/*");
+        }
     }
 }
