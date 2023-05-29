@@ -22,16 +22,26 @@ namespace PetHospital.Api.Controllers
 
        [HttpGet("[action]")]
        [Authorize]
-       [ProducesResponseType(typeof(List<ClinicResponse>), StatusCodes.Status200OK)]
+       [ProducesResponseType(typeof(List<AnimalResponse>), StatusCodes.Status200OK)]
        public async Task<IActionResult> GetAnimalByRequest([FromQuery] AnimalAllRequest request)
        {
            var result = await _animalService.GetAllPetsByRequest(request);
            return StatusCode(StatusCodes.Status200OK, result);
        }
 
-       [HttpGet("[action]/{animalId}")]
+       [HttpGet("[action]")]
        [Authorize]
-       [ProducesResponseType(typeof(ClinicResponse), StatusCodes.Status200OK)]
+       [ProducesResponseType(typeof(List<AnimalResponse>), StatusCodes.Status200OK)]
+       public async Task<IActionResult> GetAnimal()
+       {
+           var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+           var result = await _animalService.GetUserPetsList(userId);
+           return StatusCode(StatusCodes.Status200OK, result);
+       }
+
+        [HttpGet("[action]/{animalId}")]
+       [Authorize]
+       [ProducesResponseType(typeof(AnimalResponse), StatusCodes.Status200OK)]
        public async Task<IActionResult> GetPetById(string animalId)
        { 
            var result = await _animalService.GetPetById(animalId);
@@ -40,7 +50,7 @@ namespace PetHospital.Api.Controllers
 
        [HttpPost("[action]")]
        [Authorize(Roles = "Doctor, User")]
-       [ProducesResponseType(typeof(ClinicResponse), StatusCodes.Status200OK)]
+       [ProducesResponseType(typeof(AnimalResponse), StatusCodes.Status200OK)]
        public async Task<IActionResult> CreateAnimal([FromForm] AnimalRequest request)
        {
            var result = await _animalService.CreateAsync(request, Request.Form.Files, Directory.GetCurrentDirectory());

@@ -24,7 +24,7 @@ namespace PetHospital.Data.Repositories
             return _db.Set<TEntity>().ToListAsync();
         }
 
-        public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return _db.Set<TEntity>().Where(predicate).ToListAsync();
         }

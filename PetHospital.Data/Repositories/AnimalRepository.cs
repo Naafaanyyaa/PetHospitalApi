@@ -3,6 +3,7 @@ using PetHospital.Data.Entities;
 using PetHospital.Data.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace PetHospital.Data.Repositories
 {
@@ -44,6 +45,15 @@ namespace PetHospital.Data.Repositories
                 .Include(x => x.AnimalClinic)
                 .ThenInclude(x => x.Clinic)
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public override Task<List<Animal>> GetAsync(Expression<Func<Animal, bool>> predicate)
+        {
+            return _db.Set<Animal>().Where(predicate)
+                .Include(x => x.Photos)
+                .Include(x => x.User)
+                .Include(x => x.AnimalClinic)
+                .ThenInclude(x => x.Clinic).ToListAsync();
         }
 
         public override async Task DeleteById(string id)
@@ -97,6 +107,7 @@ namespace PetHospital.Data.Repositories
                 _logger.LogError("Error while deleting a new animal: {EMessage}", e.Message);
             }
         }
+
         public async Task UpdateAsync(Animal animal, Clinic clinic)
         {
 
@@ -121,5 +132,6 @@ namespace PetHospital.Data.Repositories
                 _logger.LogError("Error while deleting a new animal: {EMessage}", e.Message);
             }
         }
+
     }
 }

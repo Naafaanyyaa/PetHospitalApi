@@ -28,7 +28,7 @@ namespace PetHospital.Api.Controllers
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("[action]/{diseaseId}")]
         [Authorize(Roles = "Doctor")]
         [ProducesResponseType(typeof(DiseaseResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDiseaseById(string diseaseId)

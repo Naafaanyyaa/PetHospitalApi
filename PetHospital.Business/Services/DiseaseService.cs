@@ -24,10 +24,7 @@ namespace PetHospital.Business.Services
 
         public async Task<List<DiseaseResponse>> GetDiseaseList(string animalId)
         {
-            
-            var source = await _diseasesRepository.GetAsync(null, includes: new List<Expression<Func<Diseases, object>>>()
-            {
-            });
+            var source = await _diseasesRepository.GetAsync(d => d.AnimalId == animalId, includes: new List<Expression<Func<Diseases, object>>>());
 
             var result = _mapper.Map<List<Diseases>, List<DiseaseResponse>>(source);
             return result;

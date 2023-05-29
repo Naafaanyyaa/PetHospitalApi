@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using AutoMapper;
+using Azure.Storage;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -22,13 +24,18 @@ namespace PetHospital.Business.Services
         private readonly IAnimalRepository _animalRepository;
         private readonly IClinicRepository _clinicRepository;
         private readonly UserManager<User> _userManager;
-
+        private readonly BlobServiceClient _blobServiceClient;
+        private readonly string _storageAccount = "pethospitalblob";
+        private readonly string _accessKey = "0rq2U882SOxsdCCifpFhtSPJThnzwywXDE6xA6P9vwuY3H5Pu6DgLvG8z/QoKvn1z2F7mqQw1jnl+AStcjsgvQ==";
         public AnimalService(IMapper mapper, IAnimalRepository animalRepository, UserManager<User> userManager, IClinicRepository clinicRepository)
         {
             _mapper = mapper;
             _animalRepository = animalRepository;
             _userManager = userManager;
             _clinicRepository = clinicRepository;
+            var credential = new StorageSharedKeyCredential(_storageAccount, _accessKey);
+            var blobUri = $"https://{_storageAccount}.blob.core.windows.net";
+            _blobServiceClient = new BlobServiceClient(new Uri(blobUri), credential);
         }
 
         public async Task<List<AnimalResponse>> GetAllPetsByRequest(AnimalAllRequest request)
@@ -171,6 +178,15 @@ namespace PetHospital.Business.Services
             return result;
         }
 
+        public async Task<List<AnimalResponse>> GetUserPetsList(string userId)
+        {
+            var animalList = await _animalRepository.GetAsync(animal => animal.UserId == userId);
+
+            var result = _mapper.Map<List<Animal>, List<AnimalResponse>>(animalList);
+
+            return result;
+        }
+
         private Expression<Func<Animal, bool>>? CreateFilterPredicate(AnimalAllRequest request)
         {
             Expression<Func<Animal, bool>>? predicate = null;
@@ -210,37 +226,28 @@ namespace PetHospital.Business.Services
         {
             if (files?.Any() == true)
             {
-                animal.Photos = new List<Photo>();
+                var blobUris = new List<Uri>();
+
+                var blobContainerName = "photos";
+                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
 
                 foreach (var file in files)
                 {
-                    var folderName = Path.Combine("Resources", "Documents", animal.Id);
-                    var pathToSave = Path.Combine(directoryToSave, folderName);
+                    var blobName = Path.Combine(animal.Id, file.FileName);
+                    var blobClient = blobContainerClient.GetBlobClient(blobName);
+                    await blobClient.UploadAsync(file.OpenReadStream());
 
-                    if (!Directory.Exists(pathToSave))
-                    {
-                        var dirInfo = new DirectoryInfo(pathToSave);
-                        dirInfo.Create();
-                    }
-
-                    if (file.Length > 0)
-                    {
-                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                        var fullPath = Path.Combine(pathToSave, fileName);
-                        var dbPath = Path.Combine(folderName, fileName);
-
-                        await using (var stream = new FileStream(fullPath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(stream);
-                        }
-
-                        animal.Photos.Add(new Photo()
-                        {
-                            PhotoPath = dbPath,
-                            AnimalId = animal.Id,
-                        });
-                    }
+                    var blobUri = blobClient.Uri;
+                    blobUris.Add(blobUri);
                 }
+                animal.Photos = new List<Photo>();
+
+                animal.Photos.Add(new Photo()
+                {
+                    PhotoPath = blobUris[0].ToString(),
+                    AnimalId = animal.Id,
+                });
+
             }
 
             return animal;
